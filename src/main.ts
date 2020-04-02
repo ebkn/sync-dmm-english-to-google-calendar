@@ -45,13 +45,11 @@ const markReadMessage = (
 };
 
 const parseEmailContent = (body: string): ReservationInfo => {
-  console.log(`body: ${body}`);
-
   const summaryRegexp = /様、(?<datetime>.+)の(?<teacher>.+)とのレッスン予約が完了しました。/;
   // @ts-ignore
   const { groups: { datetime, teacher } } = summaryRegexp.exec(body);
 
-  const lessonLinkRegexp = /<a.*href="(?<link>)">レッスンに参加<\/a>/;
+  const lessonLinkRegexp = /href="(?<link>.+)">レッスンに参加<\/a>/;
   // @ts-ignore
   const { groups: { link } } = lessonLinkRegexp.exec(body);
 
