@@ -1,0 +1,28 @@
+{
+  "name": "sync-dmm-english-to-google-calendar",
+  "version": "0.0.1",
+  "description": "sync DMM English reservation datetime to Google Calendar",
+  "main": "src/main.ts",
+  "scripts": {
+    "build": "tsc",
+    "deploy": "npm run build && clasp push"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/ebkn/sync-dmm-english-to-google-calendar.git"
+  },
+  "author": "ebkn",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ebkn/sync-dmm-english-to-google-calendar/issues"
+  },
+  "homepage": "https://github.com/ebkn/sync-dmm-english-to-google-calendar#readme",
+  "devDependencies": {
+    "@google/clasp": "^2.3.0",
+    "@types/google-apps-script": "^1.0.11",
+    "@typescript-eslint/eslint-plugin": "^2.26.0",
+    "@typescript-eslint/parser": "^2.26.0",
+    "eslint": "^6.8.0",
+    "typescript": "^3.8.3"
+  }
+}
