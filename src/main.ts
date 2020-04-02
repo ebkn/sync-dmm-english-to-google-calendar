@@ -1,5 +1,5 @@
 const GMAIL_SEARCH_QUERY = 'from:noreply@eikaiwa.dmm.com レッスン予約';
-const EVENT_TITLE = 'English Lesson [DMM]';
+const EVENT_TITLE = 'DMM 英会話';
 
 interface ReservationInfo {
   link: string;
@@ -21,7 +21,12 @@ function main() { // eslint-disable-line @typescript-eslint/no-unused-vars
       markReadMessage(thread, [
         (message) => {
           const info = parseEmailContent(message.getBody());
-          createCalendarEvent(EVENT_TITLE, info.startsAt, info.endsAt);
+          createCalendarEvent({
+            title: EVENT_TITLE,
+            startsAt: info.startsAt,
+            endsAt: info.endsAt,
+            description: createDescription(info),
+          });
         },
       ])
     });
@@ -54,7 +59,7 @@ const parseEmailContent = (body: string): ReservationInfo => {
   const { groups: { link } } = lessonLinkRegexp.exec(body);
 
   const startsAt = new Date(datetime);
-  const endsAt = new Date(startsAt.getTime() + 25 * 60 * 10000);
+  const endsAt = new Date(startsAt.getTime() + 25 * 60 * 1000);
 
   return {
     link,
@@ -68,13 +73,22 @@ const searchGmail = (query: string): GoogleAppsScript.Gmail.GmailThread[] => {
   return GmailApp.search(query);
 };
 
-const createCalendarEvent = (
+const createDescription = (info: ReservationInfo) => {
+  return `
+${info.link}
+
+${info.teacher} 先生
+`;
+}
+
+const createCalendarEvent = ({ title, startsAt, endsAt, description }: {
   title: string,
-  startDateTime: GoogleAppsScript.Base.Date,
-  endDateTime: GoogleAppsScript.Base.Date,
-): void => {
+  startsAt: GoogleAppsScript.Base.Date,
+  endsAt: GoogleAppsScript.Base.Date,
+  description: string,
+}): void => {
   const calendar = CalendarApp.getDefaultCalendar();
-  const event = calendar.createEvent(title, startDateTime, endDateTime);
+  const event = calendar.createEvent(title, startsAt, endsAt, { description });
 
   console.log(`[${event.getTitle()}] created.`);
 };
