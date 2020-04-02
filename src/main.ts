@@ -18,17 +18,19 @@ function main() { // eslint-disable-line @typescript-eslint/no-unused-vars
     }
 
     matchedMails.forEach((thread) => {
-      markReadMessage(thread, [
-        (message) => {
-          const info = parseEmailContent(message.getBody());
-          createCalendarEvent({
-            title: EVENT_TITLE,
-            startsAt: info.startsAt,
-            endsAt: info.endsAt,
-            description: createDescription(info),
-          });
-        },
-      ])
+      markReadMessage(thread, {
+        hooks: [
+          (message) => {
+            const info = parseEmailContent(message.getBody());
+            createCalendarEvent({
+              title: EVENT_TITLE,
+              startsAt: info.startsAt,
+              endsAt: info.endsAt,
+              description: createDescription(info),
+            });
+          },
+        ],
+      });
     });
   } catch (e) {
     console.error(`failed to execute script. error: ${e}`);
@@ -37,7 +39,7 @@ function main() { // eslint-disable-line @typescript-eslint/no-unused-vars
 
 const markReadMessage = (
   thread: GoogleAppsScript.Gmail.GmailThread,
-  hooks: ((message: GoogleAppsScript.Gmail.GmailMessage) => void)[],
+  { hooks }: { hooks: ((message: GoogleAppsScript.Gmail.GmailMessage) => void)[] },
 ): void => {
   const messages = thread.getMessages();
   messages.forEach((message) => {
