@@ -2,27 +2,32 @@ const GMAIL_SEARCH_QUERY = 'from:noreply@eikaiwa.dmm.com レッスン予約';
 const EVENT_TITLE = 'English Lesson [DMM]';
 
 interface ReservationInfo {
+  link: string;
+  teacher: string;
   startsAt: GoogleAppsScript.Base.Date;
   endsAt: GoogleAppsScript.Base.Date;
-  link: string;
 }
 
 // @ts-ignore
 function main() { // eslint-disable-line @typescript-eslint/no-unused-vars
-  const matchedMails = searchGmail(GMAIL_SEARCH_QUERY);
-  if (matchedMails.length === 0) {
-    console.log('no mails found.');
-    return;
-  }
+  try {
+    const matchedMails = searchGmail(GMAIL_SEARCH_QUERY);
+    if (matchedMails.length === 0) {
+      console.log('no mails found.');
+      return;
+    }
 
-  matchedMails.forEach((thread) => {
-    markReadMessage(thread, [
-      (message) => {
-        const info = parseEmailContent(message.getBody());
-        createCalendarEvent(EVENT_TITLE, info.startsAt, info.endsAt);
-      },
-    ])
-  });
+    matchedMails.forEach((thread) => {
+      markReadMessage(thread, [
+        (message) => {
+          const info = parseEmailContent(message.getBody());
+          createCalendarEvent(EVENT_TITLE, info.startsAt, info.endsAt);
+        },
+      ])
+    });
+  } catch (e) {
+    console.error(`failed to execute script. error: ${e}`);
+  }
 }
 
 const markReadMessage = (
@@ -42,11 +47,22 @@ const markReadMessage = (
 const parseEmailContent = (body: string): ReservationInfo => {
   console.log(`body: ${body}`);
 
-  // TODO
+  const summaryRegexp = /様、(?<datetime>.+)の(?<teacher>.+)とのレッスン予約が完了しました。/;
+  // @ts-ignore
+  const { groups: { datetime, teacher } } = summaryRegexp.exec(body);
+
+  const lessonLinkRegexp = /<a.*href="(?<link>)">レッスンに参加<\/a>/;
+  // @ts-ignore
+  const { groups: { link } } = lessonLinkRegexp.exec(body);
+
+  const startsAt = new Date(datetime);
+  const endsAt = new Date(startsAt.getTime() + 25 * 60 * 10000);
+
   return {
-    startsAt: new Date,
-    endsAt: new Date,
-    link: 'https://www.google.com',
+    link,
+    teacher: teacher ?? 'unknown',
+    startsAt,
+    endsAt,
   };
 };
 
@@ -58,13 +74,9 @@ const createCalendarEvent = (
   title: string,
   startDateTime: GoogleAppsScript.Base.Date,
   endDateTime: GoogleAppsScript.Base.Date,
-) => {
-  try {
+): void => {
   const calendar = CalendarApp.getDefaultCalendar();
   const event = calendar.createEvent(title, startDateTime, endDateTime);
 
   console.log(`[${event.getTitle()}] created.`);
-  } catch (e) {
-    console.error(`failed to create calendar event. ${e}`);
-  }
 };
