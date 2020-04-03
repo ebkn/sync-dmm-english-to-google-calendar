@@ -13,8 +13,7 @@
     }]
   },
   "oauthScopes": [
-    "https://mail.google.com/",
-    "https://www.googleapis.com/auth/script.external_request",
+    "https://www.googleapis.com/auth/gmail.modify",
     "https://www.googleapis.com/auth/calendar"
   ],
   "exceptionLogging": "STACKDRIVER"
