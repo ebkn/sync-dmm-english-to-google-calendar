@@ -4,6 +4,10 @@
   "description": "sync DMM English reservation datetime to Google Calendar",
   "main": "src/main.ts",
   "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint './src/**/*.ts'",
+    "lint:fix": "eslint --fix './src/**/*.ts'",
+    "prebuild": "npm run typecheck && npm run lint",
     "build": "tsc",
     "deploy": "npm run build && clasp push"
   },
