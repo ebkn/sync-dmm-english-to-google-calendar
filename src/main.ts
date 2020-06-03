@@ -26,7 +26,7 @@ function main() { // eslint-disable-line @typescript-eslint/no-unused-vars
 
     const label = GmailApp.createLabel(ADDED_TO_CALENDAR_LABEL);
     matchedMails.forEach((thread) => {
-      if (!hasLabel(thread, label)) return;
+      if (hasLabel(thread, label)) return;
 
       applyLabel(thread, label);
 
@@ -60,7 +60,6 @@ const applyLabel = (
 ): void => {
   thread.addLabel(label);
 };
-
 
 const parseEmailContent = (body: string): ReservationInfo => {
   const summaryRegexp = /様、(?<datetime>.+)の(?<teacher>.+)とのレッスン予約が完了しました。/;
