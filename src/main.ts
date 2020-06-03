@@ -18,9 +18,7 @@ interface ReservationInfo {
 // @ts-ignore
 function main() { // eslint-disable-line @typescript-eslint/no-unused-vars
   try {
-    const date = new Date();
-    const target = `${date.getFullYear()}/${date.toDateString()}`;
-    const matchedMails = searchGmail(`${GMAIL_SEARCH_QUERY} AND after:${target}`);
+    const matchedMails = searchGmail(GMAIL_SEARCH_QUERY);
     if (matchedMails.length === 0) {
       console.log('no mails found.');
       return;
