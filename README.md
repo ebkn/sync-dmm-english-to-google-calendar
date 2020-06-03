@@ -26,8 +26,11 @@ $ cp .clasp.sample.json .clasp.json
 ```sh
 $ npm run deploy
 ```
+5. authorize and test run
+run script on GAS editor (`Run -> Run Function -> main`) and authorize
+`https://script.google.com/d/<your script id>/edit`
 
-5. add Trigger for this project
+6. add Trigger for this project
 `https://script.google.com/u/1/home/projects/<your script id>/triggers?owned_by=1`
 
 [trigger settings sample](https://user-images.githubusercontent.com/21101122/83655611-9563b200-a5f9-11ea-98ac-87d66b869ef4.png)
